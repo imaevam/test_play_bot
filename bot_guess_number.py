@@ -4,7 +4,7 @@ import logging #для записи отчета о работе бота
 from random import randint
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import settings
-from telegram import ReplyKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, KeyboardButton
 from glob import glob
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
@@ -65,7 +65,15 @@ def guess_number(update, context): # то, что ввел пользовате�
     update.message.reply_text(message, reply_markup=main_keyboard())
 
 def main_keyboard():
-    return ReplyKeyboardMarkup([['Прислать собаку']])
+    return ReplyKeyboardMarkup([['Прислать собаку', KeyboardButton("Мои координаты", request_location=True)]])
+
+def user_coordinates(update, context):
+    context.user_data['emoji'] = get_smile(context.user_data)
+    coords = update.message.location
+    update.message.reply_text(
+        f"Ваши координаты {coords} {context.user_data['emoji']}",
+        reply_markup=main_keyboard()
+    )
 
 def main(): # Функция, которая соединяется с платформой Telegram, "тело" нашего бота
     mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
@@ -75,6 +83,7 @@ def main(): # Функция, которая соединяется с плат�
     dp.add_handler(CommandHandler("guess", guess_number))
     dp.add_handler(CommandHandler("dog", send_dog_picture))
     dp.add_handler(MessageHandler(Filters.regex('^(Прислать собаку)$'), send_dog_picture))
+    dp.add_handler(MessageHandler(Filters.location, user_coordinates))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me)) # реагировать только на текстовые сообщения
     logging.info("Бот стартовал")
     mybot.start_polling()
