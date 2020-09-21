@@ -19,23 +19,22 @@ PROXY = {'proxy_url': settings.PROXY_URL,
 def greet_user(update, context): #при вводе команды start
     print('Вызван /start')
     context.user_data['emoji'] = get_smile(context.user_data)
-    my_keyboard = ReplyKeyboardMarkup([['Прислать собаку']])
     update.message.reply_text(
         f"Привет, пользователь! Ты вызвал команду /start {context.user_data['emoji']}",
-        reply_markup=my_keyboard
+        reply_markup=main_keyboard()
         )  #ответ пользователю
 
 def send_dog_picture(update, context):
     dog_photo_list = glob('images/dog*.jp*g')
     dog_pic_filename = choice(dog_photo_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id, photo=open(dog_pic_filename, 'rb')) #функция отправки фото, принимает аргументы: в какой чат отправить картинку и открываем файл с картинкой в формате rb
+    context.bot.send_photo(chat_id=chat_id, photo=open(dog_pic_filename, 'rb'), reply_markup=main_keyboard()) #функция отправки фото, принимает аргументы: в какой чат отправить картинку и открываем файл с картинкой в формате rb
 
 def talk_to_me(update, context): #для ответа пользователю
     context.user_data['emoji'] = get_smile(context.user_data)
     user_text = update.message.text 
     print(user_text)
-    update.message.reply_text(f"{user_text}{context.user_data['emoji']}")
+    update.message.reply_text(f"{user_text}{context.user_data['emoji']}", reply_markup=main_keyboard())
 
 def get_smile(user_data): # передаем функции словарь 
     if 'emoji' not in user_data:
@@ -63,7 +62,10 @@ def guess_number(update, context): # то, что ввел пользовате�
             message = "Пожалуйста, ведите целое число"
     else:
         message = "Введите число"
-    update.message.reply_text(message)
+    update.message.reply_text(message, reply_markup=main_keyboard())
+
+def main_keyboard():
+    return ReplyKeyboardMarkup([['Прислать собаку']])
 
 def main(): # Функция, которая соединяется с платформой Telegram, "тело" нашего бота
     mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
