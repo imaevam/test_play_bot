@@ -4,7 +4,8 @@ import logging #для записи отчета о работе бота
 from random import randint
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import settings
-
+from telegram import ReplyKeyboardMarkup
+from glob import glob
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 # Настройки прокси
@@ -18,7 +19,17 @@ PROXY = {'proxy_url': settings.PROXY_URL,
 def greet_user(update, context): #при вводе команды start
     print('Вызван /start')
     context.user_data['emoji'] = get_smile(context.user_data)
-    update.message.reply_text(f"Привет, пользователь! Ты вызвал команду /start {context.user_data['emoji']}")  #ответ пользователю
+    my_keyboard = ReplyKeyboardMarkup([['Прислать собаку']])
+    update.message.reply_text(
+        f"Привет, пользователь! Ты вызвал команду /start {context.user_data['emoji']}",
+        reply_markup=my_keyboard
+        )  #ответ пользователю
+
+def send_dog_picture(update, context):
+    dog_photo_list = glob('images/dog*.jp*g')
+    dog_pic_filename = choice(dog_photo_list)
+    chat_id = update.effective_chat.id
+    context.bot.send_photo(chat_id=chat_id, photo=open(dog_pic_filename, 'rb')) #функция отправки фото, принимает аргументы: в какой чат отправить картинку и открываем файл с картинкой в формате rb
 
 def talk_to_me(update, context): #для ответа пользователю
     context.user_data['emoji'] = get_smile(context.user_data)
@@ -58,8 +69,10 @@ def main(): # Функция, которая соединяется с плат�
     mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
     
     dp = mybot.dispatcher
-    dp.add_handler(CommandHandler("start", greet_user)) # Важен порядок Handler, в начале идут общие
+    dp.add_handler(CommandHandler("start", greet_user)) # Важен порядок Handler, в начале идут конкретные, частные, и только потом самые общие
     dp.add_handler(CommandHandler("guess", guess_number))
+    dp.add_handler(CommandHandler("dog", send_dog_picture))
+    dp.add_handler(MessageHandler(Filters.regex('^(Прислать собаку)$'), send_dog_picture))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me)) # реагировать только на текстовые сообщения
     logging.info("Бот стартовал")
     mybot.start_polling()
