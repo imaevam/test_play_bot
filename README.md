@@ -1,5 +1,4 @@
 # Проект Playground_bot
-My test bot for telegram. He provides main information about constellation of planets. Mostly just a playground.
 
 Это бот для Телеграм, который присылает пользователю фотографии собачек.
 
