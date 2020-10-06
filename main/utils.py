@@ -10,6 +10,7 @@ def get_smile(user_data): # передаем функции словарь
         return emojize(smile, use_aliases=True)
     return user_data['emoji']
 
+
 def play_random_numbers(user_number):
     bot_number = randint(user_number-10, user_number+10) # левая и правая граница (минимум и максимум)
     if user_number > bot_number:
@@ -20,10 +21,12 @@ def play_random_numbers(user_number):
         message = f"Ты загадал {user_number}, а я загадал {bot_number}, я выиграл!"
     return message
 
+
 def main_keyboard():
     return ReplyKeyboardMarkup([
         ['Прислать собаку', KeyboardButton("Мои координаты", request_location=True), 'Заполнить анкету']
     ])
+
 
 def is_dog(file_name):
     app = ClarifaiApp(api_key=settings.CLARIFAI_API_KEY)
@@ -34,6 +37,7 @@ def is_dog(file_name):
             if concept['name'] == 'dog':
                 return True
     return False
+
 
 if __name__ == "__main__":
     print(is_dog('images/dog1.jpg'))

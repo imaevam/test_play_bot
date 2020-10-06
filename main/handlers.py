@@ -2,7 +2,6 @@ from glob import glob
 import os
 from random import choice
 
-
 from utils import get_smile, is_dog, play_random_numbers, main_keyboard
 
 def greet_user(update, context): #при вводе команды start
@@ -13,11 +12,13 @@ def greet_user(update, context): #при вводе команды start
         reply_markup=main_keyboard()
         )  #ответ пользователю
 
+
 def talk_to_me(update, context): #для ответа пользователю
     context.user_data['emoji'] = get_smile(context.user_data)
     user_text = update.message.text 
     print(user_text)
     update.message.reply_text(f"{user_text}{context.user_data['emoji']}", reply_markup=main_keyboard())
+
 
 def guess_number(update, context): # то, что ввел пользователь будет доступно в переменной context.args
     print(context.args)
@@ -31,11 +32,13 @@ def guess_number(update, context): # то, что ввел пользовате�
         message = "Введите число"
     update.message.reply_text(message, reply_markup=main_keyboard())
 
+
 def send_dog_picture(update, context):
     dog_photo_list = glob('images/dog*.jp*g')
     dog_pic_filename = choice(dog_photo_list)
     chat_id = update.effective_chat.id
     context.bot.send_photo(chat_id=chat_id, photo=open(dog_pic_filename, 'rb'), reply_markup=main_keyboard()) #функция отправки фото, принимает аргументы: в какой чат отправить картинку и открываем файл с картинкой в формате rb
+
 
 def user_coordinates(update, context):
     context.user_data['emoji'] = get_smile(context.user_data)
@@ -44,6 +47,7 @@ def user_coordinates(update, context):
         f"Ваши координаты {coords} {context.user_data['emoji']}",
         reply_markup=main_keyboard()
     )
+
 
 def check_user_photo(update, context):
     update.message.reply_text('Обрабатываем фотографию')

@@ -1,7 +1,8 @@
 import logging #для записи отчета о работе бота
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 
-from anketa import anketa_start
+from anketa import (anketa_start, anketa_name, anketa_rating, anketa_skip, anketa_comment,
+                    anketa_dontknow)
 from handlers import (greet_user, guess_number, send_dog_picture, user_coordinates,
                          talk_to_me, check_user_photo)
 import settings
@@ -21,9 +22,19 @@ def main(): # Функция, которая соединяется с плат�
         entry_points=[
             MessageHandler(Filters.regex('^(Заполнить анкету)$'), anketa_start)
         ], 
-        states={},
-        fallbacks=[]
+        states={
+            'name': [MessageHandler(Filters.text, anketa_name)],
+            'rating': [MessageHandler(Filters.regex('^(1|2|3|4|5)$'), anketa_rating)],
+            'comment': [
+                CommandHandler('skip', anketa_skip),
+                MessageHandler(Filters.text, anketa_comment)
+            ]
+        },
+        fallbacks=[
+            MessageHandler(Filters.text | Filters.photo | Filters.video | Filters.document | Filters.location, anketa_dontknow)
+        ]
     )
+    
     dp.add_handler(anketa)
     dp.add_handler(CommandHandler("start", greet_user)) # Важен порядок Handler, в начале идут конкретные, частные, и только потом самые общие
     dp.add_handler(CommandHandler("guess", guess_number))
