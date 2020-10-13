@@ -24,9 +24,11 @@ def greet_user(update, context): #при вводе команды /start
     """
     update.message.reply_text(text) 
 
+
 def talk_to_me(update, context): 
     user_text = update.message.text
     update.message.reply_text(f'You too, {user_text}. Please, try to use link /planet and your name of the planet or you can use link /wordcount and your question.')
+
 
 def counting_words(update, context): # ответ пользователю на /wordcount
     try: 
@@ -42,6 +44,7 @@ def counting_words(update, context): # ответ пользователю на 
     
     update.message.reply_text(text)
 
+
 def planet_constellation(update, context):
     try:
         user_choose = update.message.text
@@ -55,6 +58,7 @@ def planet_constellation(update, context):
         text = 'Did you write the name of the planet correct?'
     
     update.message.reply_text(text)
+
 
 def next_full_moon(update, context):
     try:
@@ -82,6 +86,7 @@ def main(): # Функция, которая соединяется с плат�
     logging.info("Starting bot")
     mybot.start_polling()
     mybot.idle()
+
 
 if __name__ == "__main__": #экранизация вызова функции
     main()

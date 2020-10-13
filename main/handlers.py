@@ -1,10 +1,11 @@
 from glob import glob
 import os
 from random import choice
-
+from db import db, get_or_create_user
 from utils import get_smile, is_dog, play_random_numbers, main_keyboard
 
 def greet_user(update, context): #при вводе команды start
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     print('Вызван /start')
     context.user_data['emoji'] = get_smile(context.user_data)
     update.message.reply_text(
@@ -14,6 +15,7 @@ def greet_user(update, context): #при вводе команды start
 
 
 def talk_to_me(update, context): #для ответа пользователю
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     context.user_data['emoji'] = get_smile(context.user_data)
     user_text = update.message.text 
     print(user_text)
@@ -21,7 +23,7 @@ def talk_to_me(update, context): #для ответа пользователю
 
 
 def guess_number(update, context): # то, что ввел пользователь будет доступно в переменной context.args
-    print(context.args)
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     if context.args:
         try:
             user_number = int(context.args[0])
@@ -34,6 +36,7 @@ def guess_number(update, context): # то, что ввел пользовате�
 
 
 def send_dog_picture(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     dog_photo_list = glob('images/dog*.jp*g')
     dog_pic_filename = choice(dog_photo_list)
     chat_id = update.effective_chat.id
@@ -41,6 +44,7 @@ def send_dog_picture(update, context):
 
 
 def user_coordinates(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     context.user_data['emoji'] = get_smile(context.user_data)
     coords = update.message.location
     update.message.reply_text(
@@ -50,6 +54,7 @@ def user_coordinates(update, context):
 
 
 def check_user_photo(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     update.message.reply_text('Обрабатываем фотографию')
     os.makedirs('downloads', exist_ok=True)
     user_photo = context.bot.getFile(update.message.photo[-1].file_id)
