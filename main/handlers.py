@@ -2,27 +2,26 @@ from glob import glob
 import os
 from random import choice
 from db import db, get_or_create_user
-from utils import get_smile, is_dog, play_random_numbers, main_keyboard
+from utils import is_dog, play_random_numbers, main_keyboard
 
-def greet_user(update, context): #при вводе команды start
+
+def greet_user(update, context):  # при вводе команды start
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     print('Вызван /start')
-    context.user_data['emoji'] = get_smile(context.user_data)
     update.message.reply_text(
-        f"Привет, пользователь! Ты вызвал команду /start {context.user_data['emoji']}",
+        f"Привет, пользователь! Ты вызвал команду /start {user['emoji']}",
         reply_markup=main_keyboard()
-        )  #ответ пользователю
+        )
 
 
-def talk_to_me(update, context): #для ответа пользователю
+def talk_to_me(update, context):
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
-    context.user_data['emoji'] = get_smile(context.user_data)
-    user_text = update.message.text 
+    user_text = update.message.text
     print(user_text)
-    update.message.reply_text(f"{user_text}{context.user_data['emoji']}", reply_markup=main_keyboard())
+    update.message.reply_text(f"{user_text}{user['emoji']}", reply_markup=main_keyboard())
 
 
-def guess_number(update, context): # то, что ввел пользователь будет доступно в переменной context.args
+def guess_number(update, context):
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     if context.args:
         try:
@@ -40,15 +39,14 @@ def send_dog_picture(update, context):
     dog_photo_list = glob('images/dog*.jp*g')
     dog_pic_filename = choice(dog_photo_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id, photo=open(dog_pic_filename, 'rb'), reply_markup=main_keyboard()) #функция отправки фото, принимает аргументы: в какой чат отправить картинку и открываем файл с картинкой в формате rb
+    context.bot.send_photo(chat_id=chat_id, photo=open(dog_pic_filename, 'rb'), reply_markup=main_keyboard())
 
 
 def user_coordinates(update, context):
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
-    context.user_data['emoji'] = get_smile(context.user_data)
     coords = update.message.location
     update.message.reply_text(
-        f"Ваши координаты {coords} {context.user_data['emoji']}",
+        f"Ваши координаты {coords} {user['emoji']}",
         reply_markup=main_keyboard()
     )
 
@@ -67,4 +65,3 @@ def check_user_photo(update, context):
     else:
         update.message.reply_text("Тревога, собака не обнаружена!")
         os.remove(file_name)
-
