@@ -4,8 +4,9 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 from anketa import (anketa_start, anketa_name, anketa_rating, anketa_skip, anketa_comment,
                     anketa_dontknow)
 from handlers import (greet_user, guess_number, send_dog_picture, user_coordinates,
-                         talk_to_me, check_user_photo)
+                         talk_to_me, check_user_photo, subscribe, unsubscribe)
 import settings
+from jobs import send_hello
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
@@ -15,6 +16,9 @@ PROXY = {'proxy_url': settings.PROXY_URL,
 
 def main():  # соединяет с платформой Telegram, "тело" нашего бота
     mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
+
+    jq = mybot.job_queue  # очередь задач
+    jq.run_repeating(send_hello, interval=5)
     dp = mybot.dispatcher
     anketa = ConversationHandler(
         entry_points=[
@@ -36,6 +40,8 @@ def main():  # соединяет с платформой Telegram, "тело" �
     dp.add_handler(CommandHandler("start", greet_user)) # Важен порядок Handler, в начале идут конкретные, частные, и только потом самые общие
     dp.add_handler(CommandHandler("guess", guess_number))
     dp.add_handler(CommandHandler("dog", send_dog_picture))
+    dp.add_handler(CommandHandler('subscribe', subscribe))
+    dp.add_handler(CommandHandler('unsubscribe', unsubscribe))
     dp.add_handler(MessageHandler(Filters.regex('^(Прислать собаку)$'), send_dog_picture))
     dp.add_handler(MessageHandler(Filters.photo, check_user_photo))
     dp.add_handler(MessageHandler(Filters.location, user_coordinates))
@@ -48,4 +54,4 @@ def main():  # соединяет с платформой Telegram, "тело" �
 if  __name__ == "__main__":
     main()
 
-#кодировка для логов windows 1251
+# кодировка для логов windows 1251
