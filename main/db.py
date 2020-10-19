@@ -54,3 +54,6 @@ def unsubscribe_user(db, user_data):
         {'$set': {'subscribed': False}}
     )
 
+def get_subscribed(db):
+    return db.users.find({'subscribed': True})
+

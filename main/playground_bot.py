@@ -6,7 +6,7 @@ from anketa import (anketa_start, anketa_name, anketa_rating, anketa_skip, anket
 from handlers import (greet_user, guess_number, send_dog_picture, user_coordinates,
                          talk_to_me, check_user_photo, subscribe, unsubscribe)
 import settings
-from jobs import send_hello
+from jobs import send_updates
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
@@ -18,7 +18,7 @@ def main():  # соединяет с платформой Telegram, "тело" �
     mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
 
     jq = mybot.job_queue  # очередь задач
-    jq.run_repeating(send_hello, interval=5)
+    jq.run_repeating(send_updates, interval=10, first=0)  # first=0 - запуск на нулевой секунде
     dp = mybot.dispatcher
     anketa = ConversationHandler(
         entry_points=[
