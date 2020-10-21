@@ -1,4 +1,5 @@
 from glob import glob
+from jobs import alarm
 import os
 from random import choice
 from db import db, get_or_create_user, subscribe_user, unsubscribe_user
@@ -77,3 +78,12 @@ def unsubscribe(update, context):
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     unsubscribe_user(db, user)
     update.message.reply_text('Вы успешно отписались')
+
+
+def set_alarm(update, context):
+    try:
+        alarm_seconds = abs(int(context.args[0]))
+        context.job_queue.run_once(alarm, alarm_seconds, context=update.message.chat_id)
+        update.message.reply_text(f'Уведомление через {alarm_seconds} секунд')
+    except (ValueError, TypeError):
+        update.message.reply_text('Введите целое число секунд после команды')

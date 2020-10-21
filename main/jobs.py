@@ -10,3 +10,7 @@ def send_updates(context):
             context.bot.send_message(chat_id=user['chat_id'], text=f'Точное время {now}!')  # chat_id посмотреть в mongodb compass
         except BadRequest:
             print(f"Chat {user['chat_id']} not found")
+
+
+def alarm(context):
+    context.bot.send_message(chat_id=context.job.context, text="Сработал будильник!")
