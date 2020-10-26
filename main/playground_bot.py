@@ -74,7 +74,7 @@ def main():  # соединяет с платформой Telegram, "тело" �
     dp.add_handler(CommandHandler('unsubscribe', unsubscribe))
     dp.add_handler(CommandHandler('alarm', set_alarm))
     dp.add_handler(MessageHandler(Filters.regex('^(Прислать собаку)$'), send_dog_picture))
-    dp.add_handler(CallbackQueryHandler(cat_picture_rating))
+    dp.add_handler(CallbackQueryHandler(dog_picture_rating))
     dp.add_handler(MessageHandler(Filters.photo, check_user_photo))
     dp.add_handler(MessageHandler(Filters.location, user_coordinates))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
