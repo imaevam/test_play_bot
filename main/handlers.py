@@ -3,7 +3,7 @@ from jobs import alarm
 import os
 from random import choice
 from db import db, get_or_create_user, subscribe_user, unsubscribe_user
-from utils import is_dog, play_random_numbers, main_keyboard
+from utils import is_dog, play_random_numbers, main_keyboard, dog_rating_inline_keyboard
 
 
 def greet_user(update, context):  # при вводе команды start
@@ -40,7 +40,11 @@ def send_dog_picture(update, context):
     dog_photo_list = glob('images/dog*.jp*g')
     dog_pic_filename = choice(dog_photo_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id, photo=open(dog_pic_filename, 'rb'), reply_markup=main_keyboard())
+    context.bot.send_photo(
+        chat_id=chat_id,
+        photo=open(dog_pic_filename, 'rb'),
+        reply_markup=dog_rating_inline_keyboard()
+    )
 
 
 def user_coordinates(update, context):

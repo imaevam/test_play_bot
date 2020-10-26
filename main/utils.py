@@ -1,6 +1,7 @@
 from clarifai.rest import ClarifaiApp
 import settings
 from random import randint
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 
 
@@ -30,6 +31,17 @@ def is_dog(file_name):
             if concept['name'] == 'dog':
                 return True
     return False
+
+
+def dog_rating_inline_keyboard():  # функция, которая будет формировать клавиатуру
+    inlinekeyboard = [
+        [
+            InlineKeyboardButton("Нравится", callback_data='1'),
+            InlineKeyboardButton("Не нравится", callback_data='-1')
+        ]
+    ]
+    return InlineKeyboardMarkup(inlinekeyboard)
+
 
 
 if __name__ == "__main__":
