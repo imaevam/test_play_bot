@@ -33,15 +33,15 @@ def is_dog(file_name):
     return False
 
 
-def dog_rating_inline_keyboard():  # функция, которая будет формировать клавиатуру
-    inlinekeyboard = [
+def dog_rating_inline_keyboard(image_name):  # функция, которая будет формировать клавиатуру
+    callback_text = 'rating|{image_name}|'
+    keyboard = [
         [
-            InlineKeyboardButton("Нравится", callback_data='1'),
-            InlineKeyboardButton("Не нравится", callback_data='-1')
+            InlineKeyboardButton("Нравится", callback_data=callback_text + '1'),  # + 1 point
+            InlineKeyboardButton("Не нравится", callback_data=callback_text + '-1')
         ]
     ]
-    return InlineKeyboardMarkup(inlinekeyboard)
-
+    return InlineKeyboardMarkup(keyboard)
 
 
 if __name__ == "__main__":

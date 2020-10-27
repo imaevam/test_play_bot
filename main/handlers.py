@@ -2,8 +2,10 @@ from glob import glob
 from jobs import alarm
 import os
 from random import choice
-from db import db, get_or_create_user, subscribe_user, unsubscribe_user
-from utils import is_dog, play_random_numbers, main_keyboard, dog_rating_inline_keyboard
+from db import (db, get_or_create_user, subscribe_user, unsubscribe_user,
+                    save_dog_image_vote, user_voted)
+from utils import (is_dog, play_random_numbers, main_keyboard,
+                    dog_rating_inline_keyboard)
 
 
 def greet_user(update, context):  # при вводе команды start
@@ -40,10 +42,17 @@ def send_dog_picture(update, context):
     dog_photo_list = glob('images/dog*.jp*g')
     dog_pic_filename = choice(dog_photo_list)
     chat_id = update.effective_chat.id
+    if user_voted(db, dog_pic_filename, user['user_id']):
+        keyboard = None
+        caption = 'Вы уже голосовали'
+    else:
+        keyboard = dog_rating_inline_keyboard(dog_pic_filename)
+        caption = None
     context.bot.send_photo(
         chat_id=chat_id,
         photo=open(dog_pic_filename, 'rb'),
-        reply_markup=dog_rating_inline_keyboard()
+        reply_markup=keyboard,
+        caption=caption
     )
 
 
@@ -91,3 +100,12 @@ def set_alarm(update, context):
         update.message.reply_text(f'Уведомление через {alarm_seconds} секунд')
     except (ValueError, TypeError):
         update.message.reply_text('Введите целое число секунд после команды')
+
+
+def dog_picture_rating(update, context):
+    update.callback_query.answer()
+    callback_type, image_name, vote = update.callback_query.data.split('|')
+    vote = int(vote)
+    user = get_or_create_user(db, update.effective_user, update.effective_chat.id)
+    save_dog_image_vote(db, user, image_name, vote)
+    update.callback_query.edit_message_caption(f"Ваш голос {vote} сохранен")
