@@ -3,7 +3,7 @@ from jobs import alarm
 import os
 from random import choice
 from db import (db, get_or_create_user, subscribe_user, unsubscribe_user,
-                    save_dog_image_vote, user_voted)
+                    save_dog_image_vote, user_voted, get_image_rating)
 from utils import (is_dog, play_random_numbers, main_keyboard,
                     dog_rating_inline_keyboard)
 
@@ -43,8 +43,9 @@ def send_dog_picture(update, context):
     dog_pic_filename = choice(dog_photo_list)
     chat_id = update.effective_chat.id
     if user_voted(db, dog_pic_filename, user['user_id']):
+        rating = get_image_rating(db, dog_pic_filename)
         keyboard = None
-        caption = 'Вы уже голосовали'
+        caption = f'Рейтинг картинки {rating}'
     else:
         keyboard = dog_rating_inline_keyboard(dog_pic_filename)
         caption = None
@@ -108,4 +109,5 @@ def dog_picture_rating(update, context):
     vote = int(vote)
     user = get_or_create_user(db, update.effective_user, update.effective_chat.id)
     save_dog_image_vote(db, user, image_name, vote)
-    update.callback_query.edit_message_caption(f"Ваш голос {vote} сохранен")
+    rating = get_image_rating(db, image_name)
+    update.callback_query.edit_message_caption(f"Рейтинг картинки {rating}")
