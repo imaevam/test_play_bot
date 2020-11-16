@@ -1,19 +1,25 @@
-# Проект Playground_bot
+# Playground_bot
+
+## Concept 
+Telegram-bot, which give you some opportunities to get dog's pictures, play the guesser, to get your geo coordinates, check user's photo, set an alarm, make subscription, stay your feedback about bot etc.
 
 
-## Установка
+## Getting Started
 
-1. Клонируйте репозиторий с github
-2. Создайте виртуальное окружение
-3. Установите зависимости `pip install -r requirements.txt`
-4. Создайте файл `settings.py`
-5. Впишите в settings.py переменные: 
+1. Open a terminal
+2. Copy this code :
+`git clone "https://github.com/imaevam/test_play_bot.git"`
+3. Create a Python virtual environment
+4. Install the project requirements:
+`pip install -r requirements.txt`
+5. Create the configuration file or settings.py with such values: 
 ```
-API_KEY = "API-ключ бота"
-PROXY_URL = 'Адрес прокси'
-PROXY_USERNAME = 'Логин на прокси'
-PROXY_PASSWORD = 'Пароль на прокси'
+API_KEY = "API-key"
+PROXY_URL = 'PROXY'
+PROXY_USERNAME = 'PROXY_USERNAME'
+PROXY_PASSWORD = 'PROXY_PASSWORD'
 USER_EMOJI = [':smiley_cat:', ':kissing_cat:', ':-1:', ':thumbsdown:', ':ok_hand:', ':punch:', ':facepunch:',
 ':fist:', ':v:', ':wave:', ':hand:', ':raised_hand:', ':open_hands:']
 ```
-6. Запустите бота командой `playground_bot.py`
+6. Run the bot `python playground_bot.py`
+It can be found on Telegram as @howtomakeyourfirstbot
